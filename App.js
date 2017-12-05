@@ -1,53 +1,67 @@
 import React from 'react';
+
 import {
     StyleSheet,
-    Text,
     View,
+    StatusBar,
     TouchableOpacity,
     TouchableHighlight,
     TouchableWithoutFeedback,
-    TouchableNativeFeedback,
+    Image,
 } from 'react-native';
+
+import MapView from 'react-native-maps';
 
 console.disableYellowBox = true;
 
-export default class App extends React.Component {
-    state = { taps: [] };
+const NYC = {
+    latitude: 40.72596999999915,
+    longitude: -73.99426968220215,
+    latitudeDelta: 0.005,
+    longitudeDelta: 0.001,
+};
 
-    onPress = () => {
-        console.log('Clicked.');
-    }
+export default class TouchablesApp extends React.Component {
+    state = { hasVisited: false };
 
-    onPressWithoutFeedback = () => {
-        this.setState(state => ({
-            taps: [...state.taps, state.taps.length +1 ]
-        }))
-    }
+    onTouchableHighlightPress = () => {
+        console.log('Pressed');
+    };
 
+    onTouchableWithoutFeedbackPress = () => {
+        this.setState( (state, props) => ({ hasVisited: !state.hasVisited }));
+    };
 
     render() {
-        const { taps } = this.state;
+        const { hasVisited } = this.state;
+
         return (
             <View style={styles.container}>
-                <TouchableOpacity style={styles.touchableOpacity}
-                                  onPress={this.onPress}>
-                    <Text style={styles.buttonLabel}>TouchableOpacity</Text>
-                </TouchableOpacity>
-                <TouchableHighlight style={styles.buttonContainer}
-                                    onPress={this.onPress}
-                                    underlayColor="#eeed33">
-                    <Text style={styles.buttonLabel}>TouchableHighlight</Text>
-                </TouchableHighlight>
-                <TouchableWithoutFeedback onPress={this.onPressWithoutFeedback}>
-                    <View style={styles.buttonContainer}>
-                        <Text style={styles.buttonLabel}>TouchableWithoutFeedback</Text>
-                    </View>
-                </TouchableWithoutFeedback>
-                <View style={styles.tapsContainer}>
-                    {taps && taps.map((tap, index) => {
-                        return <Text key={index}>Tap #{tap}</Text>
-                    })}
+                <StatusBar style={styles.header}
+                           barStyle="light-content"/>
+                <MapView style={styles.map}
+                         region={NYC}/>
+                <View style={styles.header}>
+                    <TouchableOpacity>
+                        <Image style={styles.image}
+                               source={require('./assets/hamburger.png')}/>
+                    </TouchableOpacity>
+                    <TouchableHighlight style={styles.touchableHighlight}
+                                        onPress={this.onTouchableHighlightPress}
+                                        underlayColor="#fafafa"
+                    >
+                        <Image style={styles.compass}
+                               source={require('./assets/compass.png')}/>
+                    </TouchableHighlight>
                 </View>
+                <TouchableWithoutFeedback onPress={this.onTouchableWithoutFeedbackPress}>
+                    {hasVisited
+                        ? <Image style={styles.toggledImage}
+                                 source={require('./assets/visited.png')}/>
+                        : <Image style={styles.toggledImage}
+                                 source={require('./assets/unvisited.png')}/>
+                    }
+                </TouchableWithoutFeedback>
             </View>
         );
   }
@@ -58,37 +72,42 @@ const styles = StyleSheet.create({
         flex: 1,
         backgroundColor: '#fff',
         justifyContent: 'center',
-        marginTop: 50,
-        marginRight: 20,
-        marginLeft: 20,
-        marginBottom: 20
-    },
-    buttonContainer: {
-        backgroundColor: 'silver',
-        borderRadius: 10,
-        padding: 20,
-        marginTop: 10,
-        marginBottom: 10
-    },
-    touchableOpacity: {
-        backgroundColor: 'indianred',
-        borderRadius: 10,
-        borderWidth: 2,
-        borderColor: 'silver',
-        padding: 20,
-        marginTop: 10,
-    },
-    buttonLabel: {
-        textAlign: 'center',
-        color: 'white'
-    },
-    tapsContainer: {
-        flex: 1,
+        alignItems: 'center',
         flexDirection: 'column'
+    },
+    map: {
+        ...StyleSheet.absoluteFillObject
+    },
+    header: {
+        ...StyleSheet.absoluteFillObject,
+        flex: 1,
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        height: 90,
+        backgroundColor: 'transparent',
+        padding: 10
+    },
+    image: {
+        height: 42,
+        width: 42,
+    },
+    compass: {
+        height: 20,
+        width: 20,
+    },
+    touchableHighlight: {
+        padding: 5,
+        backgroundColor: '#f5f5dc',
+        borderRadius: 5,
+        borderColor: 'rgba(10, 10, 10, 0.35)',
+        borderWidth: 1
+    },
+    toggledImage: {
+        height: 24,
+        width: 24,
     }
-
 });
-
 
 
 
