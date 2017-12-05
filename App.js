@@ -21,7 +21,7 @@ const NYC = {
     longitudeDelta: 0.001,
 };
 
-export default class TouchablesApp extends React.Component {
+export default class Touchables extends React.Component {
     state = { hasVisited: false };
 
     onTouchableHighlightPress = () => {
